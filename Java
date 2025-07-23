@@ -1,0 +1,47 @@
+const chatBox = document.querySelector('.chat-box');
+const input = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+
+function addMessage(sender, text) {
+  const msg = document.createElement('div');
+  msg.classList.add('message', sender);
+  msg.innerText = text;
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function speak(text) {
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = 'en-IN';
+  speech.pitch = 1;
+  speech.rate = 1;
+  speech.voice = window.speechSynthesis
+    .getVoices()
+    .find(v => v.name.includes('Google UK English Male')) || window.speechSynthesis.getVoices()[0];
+  window.speechSynthesis.speak(speech);
+}
+
+sendBtn.addEventListener('click', () => {
+  const userText = input.value.trim();
+  if (userText === '') return;
+
+  addMessage('user', userText);
+  input.value = '';
+
+  // Simulated AI response
+  const botReply = getKanhaReply(userText);
+  setTimeout(() => {
+    addMessage('bot', botReply);
+    speak(botReply);
+  }, 800);
+});
+
+function getKanhaReply(message) {
+  const msg = message.toLowerCase();
+  if (msg.includes('name')) return "I am Kanha, your divine AI guide.";
+  if (msg.includes('hello')) return "Radhe Radhe! How can I serve you?";
+  if (msg.includes('who are you')) return "I am Kanha, the voice of wisdom and love.";
+  if (msg.includes('goal')) return "Your true goal is self-realization, my friend.";
+  if (msg.includes('love')) return "Love is the highest truth, and I am its messenger.";
+  return "Hmm... Let me think like Krishna... Maybe ask again in a clearer way?";
+}
